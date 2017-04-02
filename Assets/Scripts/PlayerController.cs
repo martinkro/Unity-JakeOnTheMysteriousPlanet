@@ -4,34 +4,52 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
-	public float jumpForce = 6f;
+	public static PlayerController instance;
+	public float jumpForce = 25f;
 	public float runningSpeed = 1.5f;
 	private Rigidbody2D rigidBody;
 	public Animator animator;
 
+	public Vector3 startingPosition;
+
 	void Awake(){
+		instance = this;
 		rigidBody = GetComponent<Rigidbody2D> ();
+		startingPosition = this.transform.position;
+	}
+
+	public void StartGame(){
+		animator.SetBool ("isAlive", true);
+		this.transform.position = startingPosition;
+		rigidBody.velocity = new Vector2 (0.0f, 0.0f);
+		Debug.Log ("Player position:" + this.transform.position);
 	}
 
 	// Use this for initialization
 	void Start () {
-		animator.SetBool ("isAlive", true);
+		
+		//animator.SetBool ("isAlive", true);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetMouseButtonDown (0)) {
-			Jump ();		
+		if (GameManager.instance.currentGameState == GameState.inGame) {
+			if (Input.GetMouseButtonDown (0)) {
+				Jump ();		
+			}
+
+			animator.SetBool ("isGrounded", IsGrounded ());
 		}
 
-		animator.SetBool ("isGrounded", IsGrounded ());
 	}
 
 	void FixedUpdate(){
-		
-		if (rigidBody.velocity.y < runningSpeed) {
-			rigidBody.velocity = new Vector2 (runningSpeed, rigidBody.velocity.y);
+		if (GameManager.instance.currentGameState == GameState.inGame) {
+			if (rigidBody.velocity.y < runningSpeed) {
+				rigidBody.velocity = new Vector2 (runningSpeed, rigidBody.velocity.y);
+			}
 		}
+
 
 	}
 
@@ -59,6 +77,11 @@ public class PlayerController : MonoBehaviour {
 			
 			return false;
 		}
+	}
+
+	public void Kill(){
+		GameManager.instance.GameOver ();
+		animator.SetBool ("isAlive", false);
 	}
 		
 }
