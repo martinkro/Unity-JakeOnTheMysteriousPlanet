@@ -82,6 +82,15 @@ public class PlayerController : MonoBehaviour {
 	public void Kill(){
 		GameManager.instance.GameOver ();
 		animator.SetBool ("isAlive", false);
+
+		if (PlayerPrefs.GetFloat ("highscore", 0) < this.GetDistance ()) {
+			PlayerPrefs.SetFloat ("highscore", this.GetDistance ());
+		}
+	}
+
+	public float GetDistance(){
+		float traveledDistance = Vector2.Distance (new Vector2(startingPosition.x, 0), new Vector2(this.transform.position.x, 0));
+		return traveledDistance;
 	}
 		
 }

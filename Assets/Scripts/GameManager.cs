@@ -16,6 +16,8 @@ public class GameManager : MonoBehaviour {
 	public Canvas inGameCanvas;
 	public Canvas gameOverCanvas;
 
+	public int collectedCoins = 0;
+
 	void Awake(){
 		instance = this;
 	}
@@ -59,5 +61,9 @@ public class GameManager : MonoBehaviour {
 			gameOverCanvas.enabled = true;
 		}
 		currentGameState = gameState;
+	}
+
+	public void CollectCoin(){
+		++collectedCoins;
 	}
 }
